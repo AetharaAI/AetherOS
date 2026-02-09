@@ -1,0 +1,170 @@
+model_list:
+
+  # =========================
+  # Core Reasoning / Chat
+  # =========================
+
+  - model_name: kimi-k2-thinking
+    litellm_params:
+      model: openai/kimi-k2-thinking
+      api_base: http://kimi-k2-thinking:8001/v1
+      api_key: "EMPTY"
+
+  - model_name: qwen3-coder-30b
+    litellm_params:
+      model: openai/qwen3-coder-30b
+      api_base: http://qwen3-coder-30b:8001/v1
+      api_key: "EMPTY"
+
+  # =========================
+  # Multimodal / Vision-Language
+  # =========================
+
+  - model_name: qwen3-vl-thinking
+    litellm_params:
+      model: openai/qwen3-vl-thinking
+      api_base: http://qwen3-vl-thinking:8001/v1
+      api_key: "EMPTY"
+      supports_function_calling: true
+      supports_images: true
+
+  - model_name: phi-4-mm
+    litellm_params:
+      model: openai/phi-4-mm
+      api_base: http://phi-4-mm:8001/v1
+      api_key: "EMPTY"
+
+  - model_name: gemma-3-vision
+    litellm_params:
+      model: openai/gemma-3-vision
+      api_base: http://gemma-3-vision:8001/v1
+      api_key: "EMPTY"
+
+  - model_name: step-3-vl-10b
+    litellm_params:
+      model: openai/step-3-vl-10b
+      api_base: http://step-3-vl-10b:8001/v1
+      api_key: "EMPTY"
+
+  # =========================
+  # GLM Flash Variants
+  # =========================
+
+  - model_name: glm-4-6v-flash
+    litellm_params:
+      model: openai/glm-4-6v-flash
+      api_base: http://glm-4-6v-flash:8001/v1
+      api_key: "EMPTY"
+
+  - model_name: glm-4-7-flash
+    litellm_params:
+      model: openai/glm-4-7-flash
+      api_base: http://glm-4-7-flash:8001/v1
+      api_key: "EMPTY"
+
+  # =========================
+  # OCR / Vision Utility
+  # =========================
+
+  - model_name: chandra-ocr
+    litellm_params:
+      model: openai/chandra-ocr
+      api_base: http://chandra-ocr:8001/v1
+      api_key: "EMPTY"
+
+  # =========================
+  # Reserved / Planned
+  # =========================
+
+  - model_name: kimi-linear
+    litellm_params:
+      model: openai/kimi-linear
+      api_base: http://kimi-linear:8001/v1
+      api_key: "EMPTY"
+
+  - model_name: kimi-vl-thinking
+    litellm_params:
+      model: openai/kimi-vl-thinking
+      api_base: http://kimi-vl-thinking:8001/v1
+      api_key: "EMPTY"
+      supports_function_calling: true
+      supports_images: true
+    model_info:
+      mode: chat
+      supports_function_calling: true
+      supports_vision: true
+      max_input_tokens: 128000
+      max_output_tokens: 8192
+
+  - model_name: kimi-vl-instruct
+    litellm_params:
+      model: openai/kimi-vl-instruct
+      api_base: http://kimi-vl-instruct:8001/v1
+      api_key: "EMPTY"
+
+general_settings:
+  master_key: sk-aether-master-pro
+
+  # Keep auth enabled so every request requires a key.
+  disable_auth: false
+
+  # Enables LiteLLM UI/admin experience.
+  ui: true
+
+  # Multi-app/per-user telemetry support.
+  allow_user_auth: true
+  enable_key_management: true
+  enforce_user_param: true
+
+  # Spend + usage endpoints depend on DB-backed spend logs.
+  database_url: "postgresql://uap_core:uap_aethercore2025@triad.aetherpro.tech:5432/litellm"
+  store_model_in_db: true
+  store_prompts_in_spend_logs: true
+
+  # Buffered writes for high-throughput spend logs.
+  use_redis_transaction_buffer: true
+
+router_settings:
+  redis_host: "redis"
+  redis_port: 6379
+  # redis_password: "uap_gmccmg_aethercore2025"
+  routing_strategy: "least-busy"
+
+  # Basic resilience controls.
+  enable_pre_call_checks: true
+  allowed_fails: 3
+  cooldown_time: 30
+
+litellm_settings:
+  cache: true
+  cache_params:
+    type: "redis"
+    host: "redis"
+    port: "6379"
+
+  # Accepts OpenAI-compatible extras without hard-failing.
+  drop_params: true
+
+  # Keeps chat available even if spend DB is briefly unavailable.
+  allow_requests_on_db_unavailable: true
+  litellm_dashboard: true
+  set_verbose: false
+  json_logs: true
+
+  # Useful for activity/metrics dashboards.
+  success_callback:
+    - "prometheus"
+  failure_callback:
+    - "prometheus"
+  service_callback:
+    - "prometheus"
+
+  # Keep message + metadata persisted for debugging and usage analysis.
+  turn_off_message_logging: false
+
+  mcp_servers:
+    fabric-gateway:
+      url: "https://fabric.perceptor.us/mcp"
+      transport: "http"
+      headers:
+        Authorization: "Bearer dev-shared-secret"

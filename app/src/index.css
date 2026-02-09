@@ -1,0 +1,173 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* AetherOS Carbon Theme */
+    --carbon-black: #0a0a0b;
+    --carbon-800: #141416;
+    --carbon-700: #1f1f23;
+    --carbon-600: #27272e;
+    --carbon-500: #3f3f46;
+    
+    /* Sovereign Orange */
+    --sovereign-500: #ff5c28;
+    --sovereign-600: #e54d1f;
+    --sovereign-glow: rgba(255, 92, 40, 0.15);
+    
+    /* Forge Cyan */
+    --forge-cyan: #00d9ff;
+    --forge-cyan-glow: rgba(0, 217, 255, 0.1);
+    
+    /* Semantic Colors */
+    --text-primary: #f0f0f5;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #ef4444;
+    
+    /* shadcn/ui variables - mapped to carbon theme */
+    --background: 240 6% 4%;
+    --foreground: 240 10% 96%;
+    --card: 240 5% 8%;
+    --card-foreground: 240 10% 96%;
+    --popover: 240 5% 8%;
+    --popover-foreground: 240 10% 96%;
+    --primary: 14 100% 58%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 240 10% 96%;
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 45%;
+    --accent: 187 100% 50%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 4% 18%;
+    --input: 240 4% 18%;
+    --ring: 14 100% 58%;
+    --radius: 0.5rem;
+    
+    /* Sidebar variables */
+    --sidebar-background: 240 5% 6%;
+    --sidebar-foreground: 240 10% 96%;
+    --sidebar-primary: 14 100% 58%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 4% 12%;
+    --sidebar-accent-foreground: 240 10% 96%;
+    --sidebar-border: 240 4% 16%;
+    --sidebar-ring: 14 100% 58%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-carbon-black text-text-primary antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  
+  code, pre, .mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer utilities {
+  /* Custom scrollbar for dark theme */
+  .scrollbar-dark {
+    scrollbar-width: thin;
+    scrollbar-color: var(--carbon-600) var(--carbon-800);
+  }
+  
+  .scrollbar-dark::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .scrollbar-dark::-webkit-scrollbar-track {
+    background: var(--carbon-800);
+  }
+  
+  .scrollbar-dark::-webkit-scrollbar-thumb {
+    background: var(--carbon-600);
+    border-radius: 3px;
+  }
+  
+  .scrollbar-dark::-webkit-scrollbar-thumb:hover {
+    background: var(--carbon-500);
+  }
+  
+  /* Sovereign orange glow effect */
+  .glow-sovereign {
+    box-shadow: 0 0 20px var(--sovereign-glow);
+  }
+  
+  /* Forge cyan glow effect */
+  .glow-cyan {
+    box-shadow: 0 0 20px var(--forge-cyan-glow);
+  }
+  
+  /* Gradient text */
+  .text-gradient-sovereign {
+    background: linear-gradient(135deg, var(--sovereign-500), var(--sovereign-600));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Glass effect */
+  .glass {
+    background: rgba(20, 20, 22, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  
+  /* Streaming animation */
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 0.4; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1); }
+  }
+  
+  .animate-pulse-dot {
+    animation: pulse-dot 1.4s ease-in-out infinite;
+  }
+  
+  .animate-pulse-dot-delay-1 {
+    animation: pulse-dot 1.4s ease-in-out infinite 0.2s;
+  }
+  
+  .animate-pulse-dot-delay-2 {
+    animation: pulse-dot 1.4s ease-in-out infinite 0.4s;
+  }
+  
+  /* Fade in animation */
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .animate-fade-in {
+    animation: fade-in 0.2s ease-out forwards;
+  }
+  
+  /* Slide in from right */
+  @keyframes slide-in-right {
+    from { opacity: 0; transform: translateX(10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  
+  .animate-slide-in-right {
+    animation: slide-in-right 0.2s ease-out forwards;
+  }
+}
