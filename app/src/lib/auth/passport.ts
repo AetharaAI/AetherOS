@@ -1,6 +1,6 @@
 import type { User } from '@/types/chat';
 
-const DEFAULT_ISSUER = 'https://passport.aetherpro.us/realms/aether';
+const DEFAULT_ISSUER = 'https://passport.aetherpro.us/realms/aetherpro';
 const DEFAULT_CLIENT_ID = 'aetherpro-web';
 const DEFAULT_SCOPES = 'openid profile email';
 const DEFAULT_APP_HOME = 'https://aetherpro.tech';
