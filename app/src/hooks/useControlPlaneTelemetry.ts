@@ -1,7 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import {
   fetchLiteLLMUsage,
-  fetchLiteLLMUserInfo,
   fetchLiteLLMUsersCount,
   LITELLM_CONFIG,
 } from '@/lib/api/litellm';
@@ -16,7 +15,7 @@ export function useControlPlaneTelemetry(options: UseControlPlaneTelemetryOption
   const { enabled } = options;
 
   const { contextTelemetry, currentMessages, setContextTelemetry } = useChatStore();
-  const { getEffectiveUserId } = useAuthStore();
+  const { user, isAuthenticated, getEffectiveUserId } = useAuthStore();
 
   const refreshTelemetry = useCallback(async () => {
     if (!enabled) {
@@ -28,13 +27,43 @@ export function useControlPlaneTelemetry(options: UseControlPlaneTelemetryOption
 
     setContextTelemetry({ loading: true, error: null });
 
-    const [usageResult, userInfoResult, usersCountResult] = await Promise.allSettled([
+    // Use local Passport user info if available
+    if (user) {
+      setContextTelemetry({
+        userInfo: {
+          userId: user.id || userId,
+          role: 'user', // Default role for now, could be mapped from Keycloak roles if needed
+          spend: 0, // Spend tracking might need backend integration, default to 0 for now
+          maxBudget: 0,
+          metadata: {
+            email: user.email,
+            name: user.name,
+            image: user.image,
+          },
+          raw: user as any,
+        },
+      });
+    }
+
+    // Only fetch stats if authenticated (to avoid 401s/CORs on guest access to protected endpoints)
+    if (!isAuthenticated) {
+      setContextTelemetry({
+        loading: false,
+        lastUpdated: updatedAt,
+        // Reset or keep previous usage? For now, we'll just not update it validly.
+        // Actually, let's clear it if we are guest to avoid confusion.
+        usage: null,
+        usersCount: null,
+      });
+      return;
+    }
+
+    const [usageResult, usersCountResult] = await Promise.allSettled([
       fetchLiteLLMUsage({
         userId,
         appId: LITELLM_CONFIG.appId,
         lookbackDays: 7,
       }),
-      fetchLiteLLMUserInfo(userId),
       fetchLiteLLMUsersCount(),
     ]);
 
@@ -50,21 +79,12 @@ export function useControlPlaneTelemetry(options: UseControlPlaneTelemetryOption
         : 'Failed to fetch usage';
     }
 
-    if (userInfoResult.status === 'fulfilled') {
-      setContextTelemetry({
-        userInfo: userInfoResult.value,
-      });
-    } else if (!errorMessage) {
-      errorMessage = userInfoResult.reason instanceof Error
-        ? userInfoResult.reason.message
-        : 'Failed to fetch user info';
-    }
-
     if (usersCountResult.status === 'fulfilled') {
       setContextTelemetry({
         usersCount: usersCountResult.value,
       });
     } else if (!errorMessage) {
+      // Don't overwrite existing error message
       errorMessage = usersCountResult.reason instanceof Error
         ? usersCountResult.reason.message
         : 'Failed to fetch users';
@@ -75,7 +95,7 @@ export function useControlPlaneTelemetry(options: UseControlPlaneTelemetryOption
       error: errorMessage,
       lastUpdated: updatedAt,
     });
-  }, [enabled, getEffectiveUserId, setContextTelemetry]);
+  }, [enabled, isAuthenticated, user, getEffectiveUserId, setContextTelemetry]);
 
   useEffect(() => {
     if (!enabled) {

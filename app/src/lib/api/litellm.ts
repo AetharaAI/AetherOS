@@ -11,7 +11,7 @@ import type {
 const FALLBACK_BASE_URL = 'https://api.blackboxaudio.tech/v1';
 const FALLBACK_API_KEY = 'sk-aether-master-pro';
 const FALLBACK_APP_ID = 'aether-os-web';
-const FALLBACK_MODEL_NAME = 'kimi-vl-thinking';
+const FALLBACK_MODEL_NAME = 'qwen3-next-instruct';
 
 function normalizeBaseUrl(url: string): string {
   const trimmed = url.trim();
